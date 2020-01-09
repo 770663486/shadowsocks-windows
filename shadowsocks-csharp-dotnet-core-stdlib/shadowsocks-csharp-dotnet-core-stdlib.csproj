@@ -11,15 +11,47 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Encryption\**" />
-    <EmbeddedResource Remove="Encryption\**" />
-    <None Remove="Encryption\**" />
+    <None Remove="Resource\abp.js" />
+    <None Remove="Resource\default-abp-rule.js" />
+    <None Remove="Resource\libsscrypto.dll.gz" />
+    <None Remove="Resource\privoxy.exe.gz" />
+    <None Remove="Resource\privoxy_conf.txt" />
+    <None Remove="Resource\sysproxy.exe.gz" />
+    <None Remove="Resource\sysproxy64.exe.gz" />
+    <None Remove="Resource\user-rule.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resource\abp.js" />
+    <EmbeddedResource Include="Resource\default-abp-rule.js" />
+    <EmbeddedResource Include="Resource\libsscrypto.dll.gz" />
+    <EmbeddedResource Include="Resource\privoxy.exe.gz" />
+    <EmbeddedResource Include="Resource\privoxy_conf.txt" />
+    <EmbeddedResource Include="Resource\sysproxy.exe.gz" />
+    <EmbeddedResource Include="Resource\sysproxy64.exe.gz" />
+    <EmbeddedResource Include="Resource\user-rule.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.6.8" />
     <PackageReference Include="NLog.Config" Version="4.6.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
