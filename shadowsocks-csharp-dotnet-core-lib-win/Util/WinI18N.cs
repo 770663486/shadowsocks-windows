@@ -16,9 +16,9 @@ namespace Shadowsocks.Std.Win.Util
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IGetResources resources;
+        private readonly AbstractGetResources resources;
 
-        public WinI18N(IGetResources resources)
+        public WinI18N(AbstractGetResources resources)
         {
             this.resources = resources;
         }

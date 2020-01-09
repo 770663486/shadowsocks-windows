@@ -1,4 +1,4 @@
-﻿namespace Shadowsocks.Std.Os
+﻿namespace Shadowsocks.Std.Sys
 {
     public interface IAutoStartup
     {

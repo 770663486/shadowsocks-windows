@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace shadowsocks_csharp_dotnet_core_wf
+namespace Shadowsocks.DotnetCore.GUI.WF
 {
     static class Program
     {

@@ -544,8 +544,7 @@ namespace Shadowsocks.Std.Controller
 
             ConfigChanged?.Invoke(this, new EventArgs());
             UpdateSystemProxy();
-            // TODO 待重写
-            // Utils.ReleaseMemory(true);
+            Utils.ReleaseMemory(true);
         }
 
         private void StartPlugin()
@@ -616,8 +615,7 @@ namespace Shadowsocks.Std.Controller
         {
             while (true)
             {
-                // TODO 待重写
-                // Utils.ReleaseMemory(false);
+                Utils.ReleaseMemory(false);
                 Thread.Sleep(30 * 1000);
             }
         }

@@ -76,11 +76,12 @@ namespace Shadowsocks.Std {
         ///* This file is part of Adblock Plus &lt;http://adblockplus.org/&gt;,
         ///* Copyright (C) 2006-2014 Eyeo GmbH
         ///*
-        ///* Adblock Plus is free software: you can redistribute it and/or  [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///* Adblock Plus is free software: you can redistribute it and/or modify
+        ///* it und [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
-        internal static string abp_js {
+        internal static string abp {
             get {
-                return ResourceManager.GetString("abp_js", resourceCulture);
+                return ResourceManager.GetString("abp", resourceCulture);
             }
         }
         
@@ -106,21 +107,12 @@ namespace Shadowsocks.Std {
         ///    &quot;||beeg.com&quot;,
         ///    &quot;||global.bing.com&quot;,
         ///    &quot;||bloombergview.com&quot;,
-        ///    &quot; [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///    &quot;||booktopia.com.au&quot;,
+        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
-        internal static string default_abp_rule {
+        internal static string abp_rule {
             get {
-                return ResourceManager.GetString("default_abp_rule", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] libsscrypto_dll {
-            get {
-                object obj = ResourceManager.GetObject("libsscrypto_dll", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("abp_rule", resourceCulture);
             }
         }
         
@@ -138,36 +130,6 @@ namespace Shadowsocks.Std {
         internal static string privoxy_conf {
             get {
                 return ResourceManager.GetString("privoxy_conf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] privoxy_exe {
-            get {
-                object obj = ResourceManager.GetObject("privoxy_exe", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] sysproxy_exe {
-            get {
-                object obj = ResourceManager.GetObject("sysproxy_exe", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   查找 System.Byte[] 类型的本地化资源。
-        /// </summary>
-        internal static byte[] sysproxy64_exe {
-            get {
-                object obj = ResourceManager.GetObject("sysproxy64_exe", resourceCulture);
-                return ((byte[])(obj));
             }
         }
         

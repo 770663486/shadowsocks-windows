@@ -45,7 +45,6 @@ namespace Shadowsocks.Std.Util.SystemProxy
             "192.168.*"
         };
 
-
         private static string _queryStr;
 
         // In general, this won't change

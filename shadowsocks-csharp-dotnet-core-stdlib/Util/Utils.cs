@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -10,11 +12,14 @@ using System.Text;
 using NLog;
 
 using Shadowsocks.Std.Model;
+using Shadowsocks.Std.Sys;
 using Shadowsocks.Std.SystemProxy;
+
+using static Shadowsocks.Std.Model.DelegateUtil;
 
 namespace Shadowsocks.Std.Util
 {
-    
+
     public struct BandwidthScaleInfo
     {
         public float value;
@@ -42,14 +47,42 @@ namespace Shadowsocks.Std.Util
 
         private static string _tempPath = null;
 
-        private static IGetApplicationInfo applicationInfo;
+        public static IGetResources Resources
+        {
+            get; internal set;
+        }
 
-        public static IGetResources resources;
+        public static IGetApplicationInfo ApplicationInfo
+        {
+            get; internal set;
+        }
 
+        public static LoadLibrary loadLibrary
+        {
+            get => loadLibrary;
+            set
+            {
+                if (loadLibrary == null)
+                {
+                    _logger.Debug("Delegate LoadLibrary...");
+                    loadLibrary = value;
+                }
+            }
+        }
 
-        public static IGetApplicationInfo GetApplicationInfo() => applicationInfo;
+        public static SetProcessWorkingSetSize setProcessWorkingSetSize
+        {
 
-        public static IGetResources GetResources() => resources;
+            get => setProcessWorkingSetSize;
+            set
+            {
+                if (setProcessWorkingSetSize == null)
+                {
+                    _logger.Debug("Delegate SetProcessWorkingSetSize...");
+                    setProcessWorkingSetSize = value;
+                }
+            }
+        }
 
         #region Get Temp Path
 
@@ -68,7 +101,7 @@ namespace Shadowsocks.Std.Util
                     }
                     else
                     {
-                        _tempPath = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), $"Shadowsocks\\ss_win_temp_{applicationInfo.ExecutablePath().GetHashCode()}")).FullName;
+                        _tempPath = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), $"Shadowsocks\\ss_win_temp_{ApplicationInfo.ExecutablePath().GetHashCode()}")).FullName;
                     }
                 }
                 catch (Exception e)
@@ -89,7 +122,7 @@ namespace Shadowsocks.Std.Util
         {
             if (applicationInfo != null)
             {
-                Utils.applicationInfo = applicationInfo;
+                Utils.ApplicationInfo = applicationInfo;
             }
 
             return Path.Combine(GetTempPath(), filename);
@@ -302,9 +335,103 @@ namespace Shadowsocks.Std.Util
 
         #endregion
 
-        #region Memory 
 
-        public delegate void ReleaseMemory(bool removePages);
+        #region System / Memory
+
+        public static void ReleaseMemory(bool removePages)
+        {
+            // release any unused pages
+            // making the numbers look good in task manager
+            // this is totally nonsense in programming
+            // but good for those users who care
+            // making them happier with their everyday life
+            // which is part of user experience
+            GC.Collect(GC.MaxGeneration);
+            GC.WaitForPendingFinalizers();
+            if (removePages)
+            {
+                // as some users have pointed out
+                // removing pages from working set will cause some IO
+                // which lowered user experience for another group of users
+                //
+                // so we do 2 more things here to satisfy them:
+                // 1. only remove pages once when configuration is changed
+                // 2. add more comments here to tell users that calling
+                //    this function will not be more frequent than
+                //    IM apps writing chat logs, or web browsers writing cache files
+                //    if they're so concerned about their disk, they should
+                //    uninstall all IM apps and web browsers
+                //
+                // please open an issue if you're worried about anything else in your computer
+                // no matter it's GPU performance, monitor contrast, audio fidelity
+                // or anything else in the task manager
+                // we'll do as much as we can to help you
+                //
+                // just kidding
+                setProcessWorkingSetSize(Process.GetCurrentProcess().Handle,
+                                         (UIntPtr)0xFFFFFFFF,
+                                         (UIntPtr)0xFFFFFFFF);
+            }
+        }
+
+        #endregion
+
+
+        #region Exec / Lib
+
+        private static readonly List<string> loaded = new List<string>();
+
+
+        public const string LIBSSCRYPTO = "libsscrypto";
+
+
+        private static string AppendSystemLibSuffix(string name)
+        {
+            var suffix = ".dll";
+
+            // .so
+            return $"{name}.{suffix}";
+        }
+
+        public static string AppendSystemExecSuffix(string name)
+        {
+            var suffix = ".dll";
+
+            // .so
+            return $"{name}.{suffix}";
+        }
+
+        public static bool GetAndUncompressExec(string name)
+        {
+            if (!loaded.Contains(name))
+            {
+                var libPath = GetTempPath(name);
+
+                FileManager.UncompressFile(libPath, Resources.GetExec(name));
+
+                loadLibrary(libPath);
+
+                loaded.Add(name);
+            }
+
+            return true;
+        }
+
+        public static bool GetAndUncompressLib(string name)
+        {
+            if (!loaded.Contains(name))
+            {
+                var libPath = AppendSystemLibSuffix(GetTempPath(name));
+
+                FileManager.UncompressFile(libPath, Resources.GetLib(name));
+
+                loadLibrary(libPath);
+
+                loaded.Add(name);
+            }
+
+            return true;
+        }
 
         #endregion
 

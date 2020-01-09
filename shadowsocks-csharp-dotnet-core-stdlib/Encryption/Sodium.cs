@@ -1,19 +1,16 @@
-﻿using System;
-using System.IO;
-using System.Runtime.InteropServices;
+﻿using System.IO;
 
 using NLog;
 
 using Shadowsocks.Std.Util;
+
+using static Shadowsocks.Std.Model.DelegateSodium;
 
 namespace Shadowsocks.Std.Encryption
 {
     public static class Sodium
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
-        private const string DLLNAME = "libsscrypto.dll";
-        private const string NAME = "libsscrypto";
 
         private static bool _initialized = false;
         private static readonly object _initLock = new object();
@@ -22,11 +19,9 @@ namespace Shadowsocks.Std.Encryption
 
         static Sodium()
         {
-            string dllPath = Utils.GetTempPath(DLLNAME);
             try
             {
-                // TODO 待实现
-                FileManager.UncompressFile(dllPath,  Utils.GetResources().GetLib(NAME));
+                Utils.GetAndUncompressLib(Utils.LIBSSCRYPTO);
             }
             catch (IOException)
             {
@@ -35,7 +30,6 @@ namespace Shadowsocks.Std.Encryption
             {
                 _logger.LogUsefulException(e);
             }
-            LoadLibrary(dllPath);
 
             lock (_initLock)
             {
@@ -56,59 +50,35 @@ namespace Shadowsocks.Std.Encryption
             }
         }
 
-        [DllImport("Kernel32.dll")]
-        private static extern IntPtr LoadLibrary(string path);
+        public static Sodium_init sodium_init;
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int sodium_init();
-
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        private static extern int crypto_aead_aes256gcm_is_available();
+        public static Crypto_aead_aes256gcm_is_available crypto_aead_aes256gcm_is_available;
 
         #region AEAD
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int sodium_increment(byte[] n, int nlen);
+        public static Sodium_increment sodium_increment;
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int crypto_aead_chacha20poly1305_ietf_encrypt(byte[] c, ref ulong clen_p, byte[] m,
-            ulong mlen, byte[] ad, ulong adlen, byte[] nsec, byte[] npub, byte[] k);
+        public static Crypto_aead_chacha20poly1305_ietf_encrypt crypto_aead_chacha20poly1305_ietf_encrypt;
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int crypto_aead_chacha20poly1305_ietf_decrypt(byte[] m, ref ulong mlen_p,
-            byte[] nsec, byte[] c, ulong clen, byte[] ad, ulong adlen, byte[] npub, byte[] k);
+        public static Crypto_aead_chacha20poly1305_ietf_decrypt crypto_aead_chacha20poly1305_ietf_decrypt;
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int crypto_aead_xchacha20poly1305_ietf_encrypt(byte[] c, ref ulong clen_p, byte[] m, ulong mlen,
-            byte[] ad, ulong adlen, byte[] nsec, byte[] npub, byte[] k);
+        public static Crypto_aead_xchacha20poly1305_ietf_encrypt crypto_aead_xchacha20poly1305_ietf_encrypt;
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int crypto_aead_xchacha20poly1305_ietf_decrypt(byte[] m, ref ulong mlen_p, byte[] nsec, byte[] c,
-            ulong clen, byte[] ad, ulong adlen, byte[] npub, byte[] k);
+        public static Crypto_aead_xchacha20poly1305_ietf_decrypt crypto_aead_xchacha20poly1305_ietf_decrypt;
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int crypto_aead_aes256gcm_encrypt(byte[] c, ref ulong clen_p, byte[] m, ulong mlen,
-            byte[] ad, ulong adlen, byte[] nsec, byte[] npub, byte[] k);
+        public static Crypto_aead_aes256gcm_encrypt crypto_aead_aes256gcm_encrypt;
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int crypto_aead_aes256gcm_decrypt(byte[] m, ref ulong mlen_p, byte[] nsec, byte[] c,
-            ulong clen, byte[] ad, ulong adlen, byte[] npub, byte[] k);
+        public static Crypto_aead_aes256gcm_decrypt crypto_aead_aes256gcm_decrypt;
 
         #endregion
 
         #region Stream
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int crypto_stream_salsa20_xor_ic(byte[] c, byte[] m, ulong mlen, byte[] n, ulong ic,
-            byte[] k);
+        public static Crypto_stream_salsa20_xor_ic crypto_stream_salsa20_xor_ic;
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int crypto_stream_chacha20_xor_ic(byte[] c, byte[] m, ulong mlen, byte[] n, ulong ic,
-            byte[] k);
+        public static Crypto_stream_chacha20_xor_ic crypto_stream_chacha20_xor_ic;
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int crypto_stream_chacha20_ietf_xor_ic(byte[] c, byte[] m, ulong mlen, byte[] n, uint ic,
-            byte[] k);
+        public static Crypto_stream_chacha20_ietf_xor_ic crypto_stream_chacha20_ietf_xor_ic;
 
         #endregion
     }
