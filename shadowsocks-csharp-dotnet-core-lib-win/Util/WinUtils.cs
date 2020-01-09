@@ -99,7 +99,6 @@ namespace Shadowsocks.Std.Win.Util
 
         #region registry
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<挂起>")]
         public static RegistryKey OpenRegKey(string name, bool writable, RegistryHive hive = RegistryHive.CurrentUser)
         {
             // we are building x86 binary for both x86 and x64, which will
@@ -117,7 +116,7 @@ namespace Shadowsocks.Std.Win.Util
             }
             catch (Exception e)
             {
-                Utils.LogUsefulException(e);
+                _logger.LogUsefulException(e);
             }
 
             return null;
