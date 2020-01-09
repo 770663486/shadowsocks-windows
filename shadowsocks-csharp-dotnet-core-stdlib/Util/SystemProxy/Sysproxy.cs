@@ -8,12 +8,17 @@ using System.Threading;
 
 using Newtonsoft.Json;
 
+using NLog;
+
 using Shadowsocks.Std.Model;
+using Shadowsocks.Std.SystemProxy;
 
 namespace Shadowsocks.Std.Util.SystemProxy
 {
     public static class Sysproxy
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         private const string _userWininetConfigFile = "user-wininet.json";
 
         private readonly static string[] _lanIP = {
@@ -38,7 +43,7 @@ namespace Shadowsocks.Std.Util.SystemProxy
             "172.30.*",
             "172.31.*",
             "192.168.*"
-            };
+        };
 
 
         private static string _queryStr;
@@ -70,7 +75,7 @@ namespace Shadowsocks.Std.Util.SystemProxy
             }
             catch (IOException e)
             {
-                Utils.LogUsefulException(e);
+                _logger.LogUsefulException(e);
             }
         }
 
@@ -117,7 +122,6 @@ namespace Shadowsocks.Std.Util.SystemProxy
 
 
         // set system proxy to 1 (null) (null) (null)
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<挂起>")]
         public static bool ResetIEProxy()
         {
             try
@@ -145,9 +149,8 @@ namespace Shadowsocks.Std.Util.SystemProxy
             using AutoResetEvent errorWaitHandle = new AutoResetEvent(false);
             using var process = new Process();
 
-            // TODO 待实现
             // Configure the process using the StartInfo properties.
-            process.StartInfo.FileName = Utils.GetTempPath("sysproxy.exe", null);
+            process.StartInfo.FileName = Utils.GetTempPath("sysproxy.exe");
             process.StartInfo.Arguments = arguments;
             // TODO 待实现
             process.StartInfo.WorkingDirectory = Utils.GetTempPath(null);
@@ -232,11 +235,10 @@ namespace Shadowsocks.Std.Util.SystemProxy
             }
             catch (IOException e)
             {
-                Utils.LogUsefulException(e);
+                _logger.LogUsefulException(e);
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<挂起>")]
         private static void Read()
         {
             try

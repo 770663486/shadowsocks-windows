@@ -33,14 +33,12 @@ namespace Shadowsocks.Std.Util
             byte[] buffer = new byte[4096];
             int n;
 
-            using(var fs = File.Create(fileName))
-            using (var input = new GZipStream(new MemoryStream(content),
-                    CompressionMode.Decompress, false))
+            using var fs = File.Create(fileName);
+            using var input = new GZipStream(new MemoryStream(content),
+CompressionMode.Decompress, false);
+            while ((n = input.Read(buffer, 0, buffer.Length)) > 0)
             {
-                while ((n = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    fs.Write(buffer, 0, n);
-                }
+                fs.Write(buffer, 0, n);
             }
         }
 

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 using NLog;
 
-namespace Shadowsocks.Util.ProcessManagement
+namespace Shadowsocks.Std.Util.ProcessManagement
 {
     /*
      * See:

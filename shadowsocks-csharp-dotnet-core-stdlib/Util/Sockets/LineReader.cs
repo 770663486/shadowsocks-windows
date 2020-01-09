@@ -64,7 +64,6 @@ namespace Shadowsocks.Std.Util.Sockets
             socket.BeginReceive(_lineBuffer, 0, maxLineBytes, 0, ReceiveCallback, 0);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<挂起>")]
         private void ReceiveCallback(IAsyncResult ar)
         {
             int length = (int)ar.AsyncState;

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.ExceptionServices;
 using System.Text;
@@ -13,7 +14,7 @@ using Shadowsocks.Std.SystemProxy;
 
 namespace Shadowsocks.Std.Util
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<挂起>")]
+    
     public struct BandwidthScaleInfo
     {
         public float value;
@@ -30,6 +31,8 @@ namespace Shadowsocks.Std.Util
 
     public interface IGetApplicationInfo
     {
+        public string StartupPath();
+
         public string ExecutablePath();
     }
 
@@ -43,10 +46,14 @@ namespace Shadowsocks.Std.Util
 
         public static IGetResources resources;
 
+
+        public static IGetApplicationInfo GetApplicationInfo() => applicationInfo;
+
+        public static IGetResources GetResources() => resources;
+
         #region Get Temp Path
 
         // return path to store temporary files
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<挂起>")]
         public static string GetTempPath()
         {
             if (_tempPath == null)
@@ -93,7 +100,36 @@ namespace Shadowsocks.Std.Util
 
         #region Log
 
-        public static void LogUsefulException(Exception e)
+        public static void Debug(this Logger logger, EndPoint local, EndPoint remote, int len, string header = null, string tailer = null)
+        {
+            if (header == null && tailer == null)
+                logger.Debug($"{local} => {remote} (size={len})");
+            else if (header == null && tailer != null)
+                logger.Debug($"{local} => {remote} (size={len}), {tailer}");
+            else if (header != null && tailer == null)
+                logger.Debug($"{header}: {local} => {remote} (size={len})");
+            else
+                logger.Debug($"{header}: {local} => {remote} (size={len}), {tailer}");
+        }
+
+        public static void Debug(this Logger logger, Socket sock, int len, string header = null, string tailer = null)
+        {
+            logger.Debug(sock.LocalEndPoint, sock.RemoteEndPoint, len, header, tailer);
+        }
+
+        public static void Dump(this Logger logger, string tag, byte[] arr, int length)
+        {
+            var sb = new StringBuilder($"{Environment.NewLine}{tag}: ");
+            for (int i = 0; i < length - 1; i++)
+            {
+                sb.Append($"0x{arr[i]:X2}, ");
+            }
+            sb.Append($"0x{arr[length - 1]:X2}");
+            sb.Append(Environment.NewLine);
+            logger.Debug(sb.ToString());
+        }
+
+        public static void LogUsefulException(this Logger logger, Exception e)
         {
             // just log useful exceptions, not all of them
             if (e is SocketException se)
@@ -121,7 +157,7 @@ namespace Shadowsocks.Std.Util
                 }
                 else
                 {
-                    _logger.Info(e);
+                    logger.Info(e);
                 }
             }
             else if (e is ObjectDisposedException)
@@ -132,7 +168,7 @@ namespace Shadowsocks.Std.Util
                 // Win32Exception (0x80004005): A 32 bit processes cannot access modules of a 64 bit process.
                 if ((uint)winex.ErrorCode != 0x80004005)
                 {
-                    _logger.Info(e);
+                    logger.Info(e);
                 }
             }
             else if (e is ProxyException pe)
@@ -142,17 +178,17 @@ namespace Shadowsocks.Std.Util
                     case ProxyExceptionType.FailToRun:
                     case ProxyExceptionType.QueryReturnMalformed:
                     case ProxyExceptionType.SysproxyExitError:
-                        _logger.Error($"sysproxy - {pe.Type.ToString()}:{pe.Message}");
+                        logger.Error($"sysproxy - {pe.Type.ToString()}:{pe.Message}");
                         break;
                     case ProxyExceptionType.QueryReturnEmpty:
                     case ProxyExceptionType.Unspecific:
-                        _logger.Error($"sysproxy - {pe.Type.ToString()}");
+                        logger.Error($"sysproxy - {pe.Type.ToString()}");
                         break;
                 }
             }
             else
             {
-                _logger.Info(e);
+                logger.Info(e);
             }
         }
 
@@ -263,6 +299,12 @@ namespace Shadowsocks.Std.Util
             }
             return Encoding.UTF8.GetString(ms.ToArray());
         }
+
+        #endregion
+
+        #region Memory 
+
+        public delegate void ReleaseMemory(bool removePages);
 
         #endregion
 

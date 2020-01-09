@@ -27,7 +27,6 @@ namespace Shadowsocks.Std.Util.Sockets
             return new DnsEndPoint2(host, port);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<挂起>")]
         public static void FullClose(this System.Net.Sockets.Socket s)
         {
             try
