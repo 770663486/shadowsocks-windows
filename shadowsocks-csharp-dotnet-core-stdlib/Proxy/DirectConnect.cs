@@ -3,10 +3,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-using Shadowsocks.Std.Proxy;
 using Shadowsocks.Std.Util.Sockets;
 
-namespace Shadowsocks.Proxy
+namespace Shadowsocks.Std.Proxy
 {
     public class DirectConnect : IProxy
     {
@@ -27,10 +26,7 @@ namespace Shadowsocks.Proxy
         {
             public override AddressFamily AddressFamily { get; } = AddressFamily.Unspecified;
 
-            public override string ToString()
-            {
-                return "null proxy";
-            }
+            public override string ToString() => "nnull proxy";
         }
 
         private WrappedSocket _remote = new WrappedSocket();
@@ -66,27 +62,16 @@ namespace Shadowsocks.Proxy
             _remote.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
         }
 
-        public void BeginSend(byte[] buffer, int offset, int size, SocketFlags socketFlags, AsyncCallback callback,
-            object state)
+        public void BeginSend(byte[] buffer, int offset, int size, SocketFlags socketFlags, AsyncCallback callback, object state)
         {
             _remote.BeginSend(buffer, offset, size, socketFlags, callback, state);
         }
 
-        public int EndSend(IAsyncResult asyncResult)
-        {
-            return _remote.EndSend(asyncResult);
-        }
+        public int EndSend(IAsyncResult asyncResult) => _remote.EndSend(asyncResult);
 
-        public void BeginReceive(byte[] buffer, int offset, int size, SocketFlags socketFlags, AsyncCallback callback,
-            object state)
-        {
-            _remote.BeginReceive(buffer, offset, size, socketFlags, callback, state);
-        }
+        public void BeginReceive(byte[] buffer, int offset, int size, SocketFlags socketFlags, AsyncCallback callback, object state) => _remote.BeginReceive(buffer, offset, size, socketFlags, callback, state);
 
-        public int EndReceive(IAsyncResult asyncResult)
-        {
-            return _remote.EndReceive(asyncResult);
-        }
+        public int EndReceive(IAsyncResult asyncResult) => _remote.EndReceive(asyncResult);
 
         public void Shutdown(SocketShutdown how)
         {

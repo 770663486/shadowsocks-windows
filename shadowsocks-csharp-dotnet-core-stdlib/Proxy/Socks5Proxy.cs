@@ -4,11 +4,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-using Shadowsocks.Std.Proxy;
 using Shadowsocks.Std.Util;
 using Shadowsocks.Std.Util.Sockets;
 
-namespace Shadowsocks.Proxy
+namespace Shadowsocks.Std.Proxy
 {
     public class Socks5Proxy : IProxy
     {

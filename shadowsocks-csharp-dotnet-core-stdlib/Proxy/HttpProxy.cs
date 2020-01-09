@@ -80,7 +80,7 @@ namespace Shadowsocks.Std.Proxy
         public void BeginConnectDest(EndPoint destEndPoint, AsyncCallback callback, object state, NetworkCredential auth = null)
         {
             DestEndPoint = destEndPoint;
-            String authInfo = "";
+            string authInfo = "";
             if (auth != null)
             {
                 string authKey = Convert.ToBase64String(Encoding.UTF8.GetBytes(auth.UserName + ":" + auth.Password));
