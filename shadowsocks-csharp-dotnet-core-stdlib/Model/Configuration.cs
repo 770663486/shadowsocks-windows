@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 using NLog;
 
+using Shadowsocks.Std.Service;
 using Shadowsocks.Std.Util;
 
 namespace Shadowsocks.Std.Model
@@ -13,7 +14,7 @@ namespace Shadowsocks.Std.Model
     [Serializable]
     public class Configuration
     {
-        
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public string version;
 
@@ -111,7 +112,7 @@ namespace Shadowsocks.Std.Model
             catch (Exception e)
             {
                 if (!(e is FileNotFoundException))
-                    Utils.LogUsefulException(e);
+                    _logger.LogUsefulException(e);
                 return new Configuration
                 {
                     index = 0,
@@ -141,16 +142,15 @@ namespace Shadowsocks.Std.Model
             config.isDefault = false;
             try
             {
-                using (StreamWriter sw = new StreamWriter(File.Open(CONFIG_FILE, FileMode.Create)))
-                {
-                    string jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
-                    sw.Write(jsonString);
-                    sw.Flush();
-                }
+                using StreamWriter sw = new StreamWriter(File.Open(CONFIG_FILE, FileMode.Create));
+
+                string jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
+                sw.Write(jsonString);
+                sw.Flush();
             }
             catch (IOException e)
             {
-                Utils.LogUsefulException(e);
+                _logger.LogUsefulException(e);
             }
         }
 
