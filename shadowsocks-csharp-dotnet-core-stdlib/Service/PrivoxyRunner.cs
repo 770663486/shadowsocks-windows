@@ -11,6 +11,7 @@ using NLog;
 using Shadowsocks.Std.Model;
 using Shadowsocks.Std.Util;
 using Shadowsocks.Std.Util.ProcessManagement;
+using Shadowsocks.Std.Util.Resource;
 
 namespace Shadowsocks.Std.Service
 {
@@ -28,10 +29,11 @@ namespace Shadowsocks.Std.Service
         {
             try
             {
-                _uid = Utils.GetApplicationInfo().StartupPath().GetHashCode(); // Currently we use ss's StartupPath to identify different Privoxy instance.
+                _uid = Utils.Application.StartupPath().GetHashCode(); // Currently we use ss's StartupPath to identify different Privoxy instance.
                 _uniqueConfigFile = $"privoxy_{_uid}.conf";
                 _privoxyJob = new Job();
 
+                // TODO 等待重写
                 FileManager.UncompressFile(Utils.GetTempPath("ss_privoxy.exe"), Resources.privoxy_exe);
             }
             catch (IOException e)

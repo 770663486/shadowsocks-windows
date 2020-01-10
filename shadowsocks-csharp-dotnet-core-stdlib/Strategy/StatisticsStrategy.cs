@@ -12,6 +12,7 @@ using Shadowsocks.Std.Controller;
 using Shadowsocks.Std.Model;
 using Shadowsocks.Std.Service;
 using Shadowsocks.Std.Util;
+using Shadowsocks.Std.Util.Resource;
 
 namespace Shadowsocks.Std.Strategy
 {

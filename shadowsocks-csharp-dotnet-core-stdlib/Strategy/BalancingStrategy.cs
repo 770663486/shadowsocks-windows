@@ -3,7 +3,7 @@ using System.Net;
 
 using Shadowsocks.Std.Controller;
 using Shadowsocks.Std.Model;
-using Shadowsocks.Std.Util;
+using Shadowsocks.Std.Util.Resource;
 
 namespace Shadowsocks.Std.Strategy
 {
@@ -48,22 +48,22 @@ namespace Shadowsocks.Std.Strategy
             return configs[index % configs.Count];
         }
 
-        public void UpdateLatency(Model.Server server, TimeSpan latency)
+        public void UpdateLatency(Server server, TimeSpan latency)
         {
             // do nothing
         }
 
-        public void UpdateLastRead(Model.Server server)
+        public void UpdateLastRead(Server server)
         {
             // do nothing
         }
 
-        public void UpdateLastWrite(Model.Server server)
+        public void UpdateLastWrite(Server server)
         {
             // do nothing
         }
 
-        public void SetFailure(Model.Server server)
+        public void SetFailure(Server server)
         {
             // do nothing
         }

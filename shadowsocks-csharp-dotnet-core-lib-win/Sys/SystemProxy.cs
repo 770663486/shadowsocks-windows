@@ -1,20 +1,24 @@
 ﻿using System;
 
+using NLog;
+
 using Shadowsocks.Std.Model;
 using Shadowsocks.Std.Service;
-using Shadowsocks.Std.SystemProxy;
+using Shadowsocks.Std.Sys;
 using Shadowsocks.Std.Util;
+using Shadowsocks.Std.Util.Resource;
 using Shadowsocks.Std.Util.SystemProxy;
 
 namespace Shadowsocks.Std.Win.Sys
 {
     public static class SystemProxy
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         private static string GetTimestamp(DateTime value)
         {
             return value.ToString("yyyyMMddHHmmssfff");
         }
-
         public static void Update(Configuration config, bool forceDisable, PACServer pacSrv, bool noRetry = false)
         {
             bool global = config.global;
@@ -58,7 +62,7 @@ namespace Shadowsocks.Std.Win.Sys
                 _logger.LogUsefulException(ex);
                 if (ex.Type != ProxyExceptionType.Unspecific && !noRetry)
                 {
-                    var ret = MessageBox.Show(I18N.GetString("Error occured when process proxy setting, do you want reset current setting and retry?"), I18N.GetString("Shadowsocks"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    var ret = Utils.Application.WarnMessageBox(I18N.GetString("Error occured when process proxy setting, do you want reset current setting and retry?"), I18N.GetString("Shadowsocks"));
                     if (ret == DialogResult.Yes)
                     {
                         Sysproxy.ResetIEProxy();

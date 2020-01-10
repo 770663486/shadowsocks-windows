@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Shadowsocks.Std.SystemProxy
+namespace Shadowsocks.Std.Sys
 {
     public enum ProxyExceptionType
     {
@@ -27,22 +27,22 @@ namespace Shadowsocks.Std.SystemProxy
 
         public ProxyException(ProxyExceptionType type)
         {
-            this.Type = type;
+            Type = type;
         }
 
         public ProxyException(ProxyExceptionType type, string message) : base(message)
         {
-            this.Type = type;
+            Type = type;
         }
 
         public ProxyException(ProxyExceptionType type, string message, Exception innerException) : base(message, innerException)
         {
-            this.Type = type;
+            Type = type;
         }
 
         protected ProxyException(ProxyExceptionType type, SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            this.Type = type;
+            Type = type;
         }
     }
 }

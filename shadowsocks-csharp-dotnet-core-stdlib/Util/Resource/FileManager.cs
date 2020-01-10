@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime.ExceptionServices;
 using System.Text;
 
 using NLog;
 
-namespace Shadowsocks.Std.Util
+namespace Shadowsocks.Std.Util.Resource
 {
     public static class FileManager
     {
@@ -16,7 +17,9 @@ namespace Shadowsocks.Std.Util
             try
             {
                 using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                {
                     fs.Write(content, 0, content.Length);
+                }
                 return true;
             }
             catch (Exception ex)
@@ -34,8 +37,7 @@ namespace Shadowsocks.Std.Util
             int n;
 
             using var fs = File.Create(fileName);
-            using var input = new GZipStream(new MemoryStream(content),
-CompressionMode.Decompress, false);
+            using var input = new GZipStream(new MemoryStream(content), CompressionMode.Decompress, false);
             while ((n = input.Read(buffer, 0, buffer.Length)) > 0)
             {
                 fs.Write(buffer, 0, n);
@@ -51,17 +53,19 @@ CompressionMode.Decompress, false);
         {
             try
             {
-                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (var sr = new StreamReader(fs, encoding))
-                {
-                    return sr.ReadToEnd();
-                }
+                using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using var sr = new StreamReader(fs, encoding);
+
+                return sr.ReadToEnd();
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                throw ex;
+                ExceptionDispatchInfo.Capture(ex).Throw();
             }
+
+            // Suppress compilation warning, ExceptionDispatchInfo has been thrown 
+            return null;
         }
     }
 }

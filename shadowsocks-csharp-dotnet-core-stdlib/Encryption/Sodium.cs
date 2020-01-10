@@ -4,7 +4,7 @@ using NLog;
 
 using Shadowsocks.Std.Util;
 
-using static Shadowsocks.Std.Model.DelegateSodium;
+using static Shadowsocks.Std.Encryption.DelegateSodium;
 
 namespace Shadowsocks.Std.Encryption
 {
@@ -21,7 +21,7 @@ namespace Shadowsocks.Std.Encryption
         {
             try
             {
-                Utils.GetAndUncompressLib(Utils.LIBSSCRYPTO);
+                Utils.GetAndUncompressLib(Utils.libsscrypto);
             }
             catch (IOException)
             {

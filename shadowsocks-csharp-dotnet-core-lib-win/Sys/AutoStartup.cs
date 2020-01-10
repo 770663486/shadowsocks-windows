@@ -14,7 +14,7 @@ using Shadowsocks.Std.Win.Util;
 
 namespace Shadowsocks.Std.Win.Sys
 {
-    public  class AutoStartup : IAutoStartup
+    public class AutoStartup : IAutoStartup
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -22,7 +22,7 @@ namespace Shadowsocks.Std.Win.Sys
         // see https://stackoverflow.com/questions/12945805/odd-c-sharp-path-issue
         private static readonly string ExecutablePath = Assembly.GetEntryAssembly().Location;
 
-        private static readonly string Key = $"Shadowsocks_{Utils.GetApplicationInfo().StartupPath().GetHashCode()}";
+        private static readonly string Key = $"Shadowsocks_{Utils.Application.StartupPath().GetHashCode()}";
 
         private readonly ShadowsocksContext context;
 

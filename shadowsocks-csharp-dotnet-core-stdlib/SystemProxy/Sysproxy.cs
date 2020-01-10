@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using NLog;
 
 using Shadowsocks.Std.Model;
-using Shadowsocks.Std.SystemProxy;
+using Shadowsocks.Std.Sys;
 
 namespace Shadowsocks.Std.Util.SystemProxy
 {
@@ -55,15 +55,6 @@ namespace Shadowsocks.Std.Util.SystemProxy
         //  <pac-url>
         private static SysproxyConfig _userSettings = null;
 
-        enum RET_ERRORS : int
-        {
-            RET_NO_ERROR = 0,
-            INVALID_FORMAT = 1,
-            NO_PERMISSION = 2,
-            SYSCALL_FAILED = 3,
-            NO_MEMORY = 4,
-            INVAILD_OPTION_COUNT = 5,
-        };
 
         static Sysproxy()
         {

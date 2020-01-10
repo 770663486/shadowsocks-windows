@@ -9,6 +9,7 @@ using System.Reflection;
 using Shadowsocks.Std.Model;
 using Shadowsocks.Std.Util;
 using Shadowsocks.Std.Util.ProcessManagement;
+using Shadowsocks.Std.Util.Resource;
 
 namespace Shadowsocks.Std.Service
 {

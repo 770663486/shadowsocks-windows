@@ -6,7 +6,7 @@ using NLog;
 
 using Shadowsocks.Std.Controller;
 using Shadowsocks.Std.Model;
-using Shadowsocks.Std.Util;
+using Shadowsocks.Std.Util.Resource;
 
 namespace Shadowsocks.Std.Strategy
 {
@@ -116,7 +116,7 @@ namespace Shadowsocks.Std.Strategy
                 // 100 * failure - 2 * latency - 0.5 * (lastread - lastwrite)
                 status.score =
                     100 * 1000 * Math.Min(5 * 60, (now - status.lastFailure).TotalSeconds)
-                    -2 * 5 * (Math.Min(2000, status.latency.TotalMilliseconds) / (1 + (now - status.lastTimeDetectLatency).TotalSeconds / 30 / 10) +
+                    - 2 * 5 * (Math.Min(2000, status.latency.TotalMilliseconds) / (1 + (now - status.lastTimeDetectLatency).TotalSeconds / 30 / 10) +
                     -0.5 * 200 * Math.Min(5, (status.lastRead - status.lastWrite).TotalSeconds));
                 _logger.Debug(String.Format("server: {0} latency:{1} score: {2}", status.server.FriendlyName(), status.latency, status.score));
             }
@@ -145,7 +145,7 @@ namespace Shadowsocks.Std.Strategy
             }
         }
 
-        public void UpdateLatency(Model.Server server, TimeSpan latency)
+        public void UpdateLatency(Server server, TimeSpan latency)
         {
             _logger.Debug($"latency: {server.FriendlyName()} {latency}");
 
@@ -156,7 +156,7 @@ namespace Shadowsocks.Std.Strategy
             }
         }
 
-        public void UpdateLastRead(Model.Server server)
+        public void UpdateLastRead(Server server)
         {
             _logger.Debug($"last read: {server.FriendlyName()}");
 
@@ -166,7 +166,7 @@ namespace Shadowsocks.Std.Strategy
             }
         }
 
-        public void UpdateLastWrite(Model.Server server)
+        public void UpdateLastWrite(Server server)
         {
             _logger.Debug($"last write: {server.FriendlyName()}");
 
@@ -176,7 +176,7 @@ namespace Shadowsocks.Std.Strategy
             }
         }
 
-        public void SetFailure(Model.Server server)
+        public void SetFailure(Server server)
         {
             _logger.Debug($"failure: {server.FriendlyName()}");
 

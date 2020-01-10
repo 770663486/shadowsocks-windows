@@ -8,6 +8,7 @@ using NLog;
 
 using Shadowsocks.Std.Service;
 using Shadowsocks.Std.Util;
+using Shadowsocks.Std.Util.Resource;
 
 namespace Shadowsocks.Std.Model
 {

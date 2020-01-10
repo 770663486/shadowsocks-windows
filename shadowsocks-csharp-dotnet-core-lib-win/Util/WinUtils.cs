@@ -79,8 +79,7 @@ namespace Shadowsocks.Std.Win.Util
             }
             catch (ArgumentException ae)
             {
-                // TODO 待实现: 抽出 MessageBox 组件
-                // MessageBox.Show("OpenRegKey: " + ae.ToString());
+                Application.InfoMessageBox($"OpenRegKey: {ae.ToString()}");
             }
             catch (Exception e)
             {

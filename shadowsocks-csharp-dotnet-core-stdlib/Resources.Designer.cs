@@ -76,12 +76,11 @@ namespace Shadowsocks.Std {
         ///* This file is part of Adblock Plus &lt;http://adblockplus.org/&gt;,
         ///* Copyright (C) 2006-2014 Eyeo GmbH
         ///*
-        ///* Adblock Plus is free software: you can redistribute it and/or modify
-        ///* it und [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///* Adblock Plus is free software: you can redistribute it and/or  [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
-        internal static string abp {
+        internal static string abp_js {
             get {
-                return ResourceManager.GetString("abp", resourceCulture);
+                return ResourceManager.GetString("abp_js", resourceCulture);
             }
         }
         
@@ -107,12 +106,32 @@ namespace Shadowsocks.Std {
         ///    &quot;||beeg.com&quot;,
         ///    &quot;||global.bing.com&quot;,
         ///    &quot;||bloombergview.com&quot;,
-        ///    &quot;||booktopia.com.au&quot;,
-        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///    &quot; [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
-        internal static string abp_rule {
+        internal static string abp_rule_js {
             get {
-                return ResourceManager.GetString("abp_rule", resourceCulture);
+                return ResourceManager.GetString("abp_rule_js", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 en,zh-CN,zh-TW,ja
+        ///#Restart program to apply translation,,,
+        ///#This is comment line,,,
+        ///#Always keep language name at head of file,,,
+        ///#Language name is output in log,,,
+        ///&quot;#You can find it by search &quot;&quot;Current language is:&quot;&quot;&quot;,,,
+        ///#Please use UTF-8 with BOM encoding so we can edit it in Excel,,,
+        ///,,,
+        ///# Messages,,,
+        ///,,,
+        ///Shadowsocks Error: {0},Shadowsocks 错误: {0},Shadowsocks 錯誤: {0},Shadowsocks エラー: {0}
+        ///Port {0} already in use,端口 {0} 已被占用,連接埠號碼 {0} 已被使用,ポート番号 {0} は既に使用されています。
+        ///Port {0} is reserved by system,端 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        /// </summary>
+        internal static string i18n_csv {
+            get {
+                return ResourceManager.GetString("i18n_csv", resourceCulture);
             }
         }
         

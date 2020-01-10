@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Security;
 using System.Text;
 
 using NLog;
@@ -9,14 +8,14 @@ using NLog;
 using Shadowsocks.Std.Encryption.Exception;
 using Shadowsocks.Std.Util;
 
+using static Shadowsocks.Std.Encryption.DelegateOpenSSL;
+
 namespace Shadowsocks.Std.Encryption
 {
     // XXX: only for OpenSSL 1.1.0 and higher
     public static class OpenSSL
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
-        private const string DLLNAME = "libsscrypto.dll";
 
         public const int OPENSSL_ENCRYPT = 1;
         public const int OPENSSL_DECRYPT = 0;
@@ -27,12 +26,9 @@ namespace Shadowsocks.Std.Encryption
 
         static OpenSSL()
         {
-            string dllPath = Utils.GetTempPath(DLLNAME);
             try
             {
-                Utils.GetAndUncompressLib(Utils.LIBSSCRYPTO)
-
-                FileManager.UncompressFile(dllPath, Resources.libsscrypto_dll);
+                Utils.GetAndUncompressLib(Utils.libsscrypto);
             }
             catch (IOException)
             {
@@ -41,7 +37,6 @@ namespace Shadowsocks.Std.Encryption
             {
                 _logger.LogUsefulException(e);
             }
-            LoadLibrary(dllPath);
         }
 
         public static IntPtr GetCipherInfo(string cipherName)
@@ -98,8 +93,7 @@ namespace Shadowsocks.Std.Encryption
                 // copy tag to unmanaged memory
                 Marshal.Copy(tagbuf, 0, tagBufIntPtr, taglen);
 
-                var ret = EVP_CIPHER_CTX_ctrl(ctx,
-                    EVP_CTRL_AEAD_SET_TAG, taglen, tagBufIntPtr);
+                var ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, taglen, tagBufIntPtr);
 
                 if (ret != 1) throw new CryptoErrorException("openssl: fail to set AEAD tag");
 
@@ -113,54 +107,28 @@ namespace Shadowsocks.Std.Encryption
             }
         }
 
-        [DllImport("Kernel32.dll")]
-        private static extern IntPtr LoadLibrary(string path);
+        public static EVP_CIPHER_CTX_new EVP_CIPHER_CTX_new;
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr EVP_CIPHER_CTX_new();
+        public static EVP_CIPHER_CTX_free EVP_CIPHER_CTX_free;
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void EVP_CIPHER_CTX_free(IntPtr ctx);
+        public static EVP_CIPHER_CTX_reset EVP_CIPHER_CTX_reset;
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int EVP_CIPHER_CTX_reset(IntPtr ctx);
+        public static EVP_CipherInit_ex EVP_CipherInit_ex;
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int EVP_CipherInit_ex(IntPtr ctx, IntPtr type,
-            IntPtr impl, byte[] key, byte[] iv, int enc);
+        public static EVP_CipherUpdate EVP_CipherUpdate;
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int EVP_CipherUpdate(IntPtr ctx, byte[] outb,
-            out int outl, byte[] inb, int inl);
+        public static EVP_CipherFinal_ex EVP_CipherFinal_ex;
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int EVP_CipherFinal_ex(IntPtr ctx, byte[] outm, ref int outl);
+        public static EVP_CIPHER_CTX_set_padding EVP_CIPHER_CTX_set_padding;
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int EVP_CIPHER_CTX_set_padding(IntPtr x, int padding);
+        public static EVP_CIPHER_CTX_set_key_length EVP_CIPHER_CTX_set_key_length;
 
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int EVP_CIPHER_CTX_set_key_length(IntPtr x, int keylen);
-
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int EVP_CIPHER_CTX_ctrl(IntPtr ctx, int type, int arg, IntPtr ptr);
+        public static EVP_CIPHER_CTX_ctrl EVP_CIPHER_CTX_ctrl;
 
         /// <summary>
         /// simulate NUL-terminated string
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        [SuppressUnmanagedCodeSecurity]
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr EVP_get_cipherbyname(byte[] name);
+        public static EVP_get_cipherbyname EVP_get_cipherbyname;
+
     }
 }

@@ -2,11 +2,8 @@
 {
     public interface IGetResources
     {
-        public string GetI18NCSV();
+        public byte[] GetLib(ref string name);
 
-        public byte[] GetLib(string name);
-
-        public byte[] GetExec(string name);
-
+        public byte[] GetExec(ref string name);
     }
 }

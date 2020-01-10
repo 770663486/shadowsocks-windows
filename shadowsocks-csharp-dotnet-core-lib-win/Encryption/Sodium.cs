@@ -4,9 +4,9 @@ using Shadowsocks.Std.Util;
 
 namespace Shadowsocks.Std.Win.Encryption
 {
-    public static class WinSodium
+    public static class Sodium
     {
-        private const string DLL_NAME = Utils.LIBSSCRYPTO + ".dll";
+        private const string DLL_NAME = Utils.libsscrypto + ".dll";
 
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]

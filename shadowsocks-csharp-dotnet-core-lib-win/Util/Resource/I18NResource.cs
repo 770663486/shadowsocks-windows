@@ -7,20 +7,21 @@ using Microsoft.VisualBasic.FileIO;
 
 using NLog;
 
-using Shadowsocks.Std.Model;
-using Shadowsocks.Std.Util;
+using Shadowsocks.Std.Util.Resource;
 
-namespace Shadowsocks.Std.Win.Util
+using static Shadowsocks.Std.Util.Resource.IGetI18N;
+
+namespace Shadowsocks.Std.Win.Util.Resource
 {
-    public class WinI18N : IGetI18N
+    public class I18NResources : IGetI18N
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private readonly AbstractGetResources resources;
+        private I18NResource resource;
 
-        public WinI18N(AbstractGetResources resources)
+        public I18NResources(I18NResource resource)
         {
-            this.resources = resources;
+            this.resource = resource;
         }
 
         private static Dictionary<string, string> Init(string res, string locale, ref Dictionary<string, string> strings)
@@ -82,23 +83,25 @@ namespace Shadowsocks.Std.Win.Util
             return strings;
         }
 
-        public Dictionary<string, string> GetI18N(ref Dictionary<string, string> strings)
+        public void SetResources(IGetI18N.I18NResource resource) => this.resource = resource;
+
+        public void GetI18N(ref Dictionary<string, string> strings)
         {
             string i18n;
             string locale = CultureInfo.CurrentCulture.Name;
             if (!File.Exists(I18N.I18N_FILE))
             {
-                i18n = resources.GetI18NCSV();
-                //File.WriteAllText(I18N_FILE, i18n, Encoding.UTF8);
+                i18n = resource();
+                // File.WriteAllText(I18N_FILE, i18n, Encoding.UTF8);
             }
             else
             {
                 _logger.Info("Using external translation");
                 i18n = File.ReadAllText(I18N.I18N_FILE, Encoding.UTF8);
             }
-            _logger.Info("Current language is: " + locale);
+            _logger.Info($"Current language is: {locae}");
 
-            return Init(i18n, locale, ref strings);
+            Init(i18n, locale, ref strings);
         }
     }
 }

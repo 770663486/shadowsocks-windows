@@ -118,11 +118,14 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="abp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="abp_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resource\abp.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
   </data>
-  <data name="abp_rule" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="abp_rule_js" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resource\abp-rule.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="i18n_csv" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resource\i18n.csv;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="privoxy_conf" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resource\privoxy_conf.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>

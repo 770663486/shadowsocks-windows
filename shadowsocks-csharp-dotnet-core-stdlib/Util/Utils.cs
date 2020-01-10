@@ -13,13 +13,12 @@ using NLog;
 
 using Shadowsocks.Std.Model;
 using Shadowsocks.Std.Sys;
-using Shadowsocks.Std.SystemProxy;
+using Shadowsocks.Std.Util.Resource;
 
-using static Shadowsocks.Std.Model.DelegateUtil;
+using static Shadowsocks.Std.Util.DelegateUtil;
 
 namespace Shadowsocks.Std.Util
 {
-
     public struct BandwidthScaleInfo
     {
         public float value;
@@ -34,8 +33,12 @@ namespace Shadowsocks.Std.Util
         }
     }
 
-    public interface IGetApplicationInfo
+    public interface IApplication
     {
+        public int InfoMessageBox(string message, string title = "Shadowsocks");
+
+        public int WarnMessageBox(string message, string title);
+
         public string StartupPath();
 
         public string ExecutablePath();
@@ -47,12 +50,12 @@ namespace Shadowsocks.Std.Util
 
         private static string _tempPath = null;
 
-        public static IGetResources Resources
+        public static List<IGetResources> Resources
         {
             get; internal set;
         }
 
-        public static IGetApplicationInfo ApplicationInfo
+        public static IApplication Application
         {
             get; internal set;
         }
@@ -101,7 +104,7 @@ namespace Shadowsocks.Std.Util
                     }
                     else
                     {
-                        _tempPath = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), $"Shadowsocks\\ss_win_temp_{ApplicationInfo.ExecutablePath().GetHashCode()}")).FullName;
+                        _tempPath = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), $"Shadowsocks\\ss_win_temp_{Application.ExecutablePath().GetHashCode()}")).FullName;
                     }
                 }
                 catch (Exception e)
@@ -118,11 +121,11 @@ namespace Shadowsocks.Std.Util
         // return a full path with filename combined which pointed to the temporary directory
         public static string GetTempPath(string filename) => GetTempPath(filename, null);
 
-        public static string GetTempPath(string filename, IGetApplicationInfo applicationInfo)
+        public static string GetTempPath(string filename, IApplication application)
         {
-            if (applicationInfo != null)
+            if (application != null)
             {
-                Utils.ApplicationInfo = applicationInfo;
+                Application = application;
             }
 
             return Path.Combine(GetTempPath(), filename);
@@ -381,56 +384,73 @@ namespace Shadowsocks.Std.Util
 
         private static readonly List<string> loaded = new List<string>();
 
+        #region lib
 
-        public const string LIBSSCRYPTO = "libsscrypto";
+        public const string libsscrypto = "libsscrypto";
+
+        #endregion
 
 
-        private static string AppendSystemLibSuffix(string name)
-        {
-            var suffix = ".dll";
+        #region exec
 
-            // .so
-            return $"{name}.{suffix}";
-        }
+        public const string sysproxy = "sysproxy";
 
-        public static string AppendSystemExecSuffix(string name)
-        {
-            var suffix = ".dll";
-
-            // .so
-            return $"{name}.{suffix}";
-        }
+        #endregion
 
         public static bool GetAndUncompressExec(string name)
         {
             if (!loaded.Contains(name))
             {
-                var libPath = GetTempPath(name);
+                var newName = name.Clone().ToString();
 
-                FileManager.UncompressFile(libPath, Resources.GetExec(name));
+                for (int i = 0; i < Resources.Count; i++)
+                {
+                    var bytes = Resources[i].GetExec(ref newName);
 
-                loadLibrary(libPath);
+                    if (bytes != null)
+                    {
+                        var libPath = GetTempPath(newName);
 
-                loaded.Add(name);
+                        FileManager.UncompressFile(libPath, bytes);
+
+                        loaded.Add(name);
+
+                        return true;
+                    }
+                }
             }
 
-            return true;
+            // TODO I18N
+            throw new IOException("");
         }
 
         public static bool GetAndUncompressLib(string name)
         {
             if (!loaded.Contains(name))
             {
-                var libPath = AppendSystemLibSuffix(GetTempPath(name));
+                var newName = name.Clone().ToString();
 
-                FileManager.UncompressFile(libPath, Resources.GetLib(name));
+                for (int i = 0; i < Resources.Count; i++)
+                {
+                    var bytes = Resources[i].GetLib(ref newName);
 
-                loadLibrary(libPath);
+                    if (bytes != null)
+                    {
+                        var libPath = GetTempPath(newName);
 
-                loaded.Add(name);
+                        FileManager.UncompressFile(libPath, bytes);
+
+                        loadLibrary(libPath);
+
+                        loaded.Add(name);
+
+                        return true;
+                    }
+                }
             }
 
-            return true;
+            // TODO I18N
+            throw new IOException("");
         }
 
         #endregion

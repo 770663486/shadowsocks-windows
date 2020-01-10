@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-using Shadowsocks.Std.Util;
+using Shadowsocks.Std.Util.Resource;
 
 namespace Shadowsocks.Std.Model
 {

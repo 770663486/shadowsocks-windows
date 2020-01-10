@@ -22,7 +22,7 @@ namespace Shadowsocks.Std.Encryption
             string dllPath = Utils.GetTempPath(DLLNAME);
             try
             {
-                FileManager.UncompressFile(dllPath, Resources.libsscrypto_dll);
+                Utils.GetAndUncompressLib(Utils.libsscrypto);
             }
             catch (IOException)
             {
@@ -31,13 +31,12 @@ namespace Shadowsocks.Std.Encryption
             {
                 _logger.LogUsefulException(e);
             }
-            LoadLibrary(dllPath);
         }
 
         public static byte[] MD5(byte[] input)
         {
             byte[] output = new byte[16];
-            if (md5_ret(input, (uint) input.Length, output) != 0)
+            if (md5_ret(input, (uint)input.Length, output) != 0)
                 throw new System.Exception("mbedtls: MD5 failure");
             return output;
         }
@@ -48,6 +47,9 @@ namespace Shadowsocks.Std.Encryption
         [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern int md5_ret(byte[] input, uint ilen, byte[] output);
 
+
+        // TODO 等待重写
+
         /// <summary>
         /// Get cipher ctx size for unmanaged memory allocation
         /// </summary>
@@ -57,7 +59,7 @@ namespace Shadowsocks.Std.Encryption
 
         #region Cipher layer wrappers
 
-        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         public static extern IntPtr cipher_info_from_string(string cipher_name);
 
         [DllImport(DLLNAME, CallingConvention = CallingConvention.Cdecl)]
